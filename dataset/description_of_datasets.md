@@ -3,7 +3,7 @@
 In this file, we provide a short description of datasets we plan to use and introduce the processing steps we have done on them so far.
 Our goal is object detection in images captured by Unmanned Aerial Vehicles ('drones'). We plan to use two distinct datasets.
 
-## The VisDrone DET-2019 dataset <sup>1,2<\sup> 
+## The VisDrone DET-2019 dataset <sup>1,2
 
 This dataset consits of images taken by different UAVs under various conditions, eg. in urban and rural areas,
 under varying lightning and weather conditions, from different heigths, with few or many objects in one picture.
