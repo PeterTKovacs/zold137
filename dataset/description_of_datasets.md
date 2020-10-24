@@ -27,3 +27,20 @@ arXiv preprint arXiv:1804.07437, 2018
 <sup> 2 </sup> Vision Meets Drones: Past, Present and Future,
 Zhu, Pengfei and Wen, Longyin and Du, Dawei and Bian, Xiao and Hu, Qinghua and Ling, Haibin,
 arXiv preprint arXiv:2001.06303, 2020
+
+## MultiDrone Public DataSet <sup> 3 </sup>
+
+The public MultiDrone Dataset has been assembled using both pre-existing audiovisual material and newly filmed UAV shots. A large subset of these data has been annotated for facilitating scientific research, in tasks such as visual detection and tracking of bicycles, football players, human crowds, etc.
+
+A dataset for bicycle detection/tracking was assembled, consisting of 7 Youtube videos (resolution: 1920 x 1080) at 25 frames per second. Annotations are not exhaustive, i.e., there may be unannotated objects in the given video frames. The annotations are stored in the following format:
+
+
+
+| channel | frameN | objectID | X1 | X2 | Y1 | Y2 | ObjectType/view |
+|---------|--------|----------|----|----|----|----|-----------------|
+
+
+The license agreement allows to use only for scientific research, testing and development purposes and we aren’t authorized to put any part of the dataset on the publicly accessible Internet. 
+
+<sup> 3 </sup>  I. Mademlis, V. Mygdalis, N.Nikolaidis, M. Montagnuolo, F. Negro, A. Messina and I.Pitas, “High-Level Multiple-UAV Cinematography Tools for Covering Outdoor Events”, IEEE Transactions on Broadcasting, vol. 65, no. 3, pp. 627-635, 2019.
+I. Mademlis, N.Nikolaidis, A.Tefas, I.Pitas, T. Wagner and A. Messina, “Autonomous UAV Cinematography: A Tutorial and a Formalized Shot-Type Taxonomy”, ACM Computing Surveys, vol. 52, issue 5, pp. 105:1-105:33, 2019.
