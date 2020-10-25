@@ -15,7 +15,9 @@ This directory contains our code and documentation for data acquisition and basi
 __description_of_datasets__ is our writeup about the data with a self-explaining name.
 
 In addition to this, we provide basic visualization in Jupyter Notebooks .... and ....
-The main purpose of these notebooks is to introduce the datasets and give some impression about them. As both sets consist of numerous pictures, they are not uploadaded to GitHub.
+The main purpose of these notebooks is to introduce the datasets and give some impression about them. As both sets consist of numerous pictures, they are not uploadaded to GitHub. 
+
+Thus, one may not want to run the code, only look at the visualized examples.
 
 ## zold137/conv_tests
 
