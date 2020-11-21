@@ -30,4 +30,5 @@ demo_bme_transfer_learning.py
   ##### Second
   Freeze the RPN
   https://github.com/facebookresearch/Detectron/issues/143
+  
   "Just insert a StopGradient op in the correct place(s). For example usage, see https://github.com/facebookresearch/Detectron/blob/master/detectron/modeling/ResNet.py#L105"
