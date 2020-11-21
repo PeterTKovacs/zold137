@@ -17,6 +17,7 @@ demo_bme_transfer_learning.py
   
   
 ### Extras
+  #####First
   Transfer learning freeze layers issue
   https://github.com/facebookresearch/maskrcnn-benchmark/issues/201
   
@@ -25,7 +26,7 @@ demo_bme_transfer_learning.py
   A"As you can see from here(https://github.com/facebookresearch/maskrcnn-benchmark/blob/master/maskrcnn_benchmark/modeling/backbone/resnet.py#L111),
     if you want to only train starting from stage 4, you should set FREEZE_CONV_BODY_AT = 4 "
     
-    
+  ##### Second
   Freeze the RPN
   https://github.com/facebookresearch/Detectron/issues/143
   "Just insert a StopGradient op in the correct place(s). For example usage, see https://github.com/facebookresearch/Detectron/blob/master/detectron/modeling/ResNet.py#L105"
