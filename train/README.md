@@ -6,10 +6,9 @@ e2e_faster_rcnn_X_101_32x8d_FPN_1x_bme_transfer_learning.yaml
   - This file exaclty describe a CN() object, of which parameters located in ./maskrcnn-benchmark/maskrcnn_benchmark/config/defaults.py
   - WEIGHT: "" will find the detecron model in ./maskrcnn-benchmark/maskrcnn_benchmark/config/paths_catalog.py
   - FREEZE_CONV_BODY_AT: 5 start train from stage 5
-  
-  -Datasets: 
-    Train:
-    Test: 
+  - Datasets: put your own dataset
+    - Train:
+    - Test: 
   
 ### 2
 demo_bme_transfer_learning.py
