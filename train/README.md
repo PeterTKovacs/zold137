@@ -28,7 +28,7 @@ demo_bme_transfer_learning.py
     if you want to only train starting from stage 4, you should set FREEZE_CONV_BODY_AT = 4 "
     
   ##### Second
-  Freeze the RPN
+  Freeze the RPN (sadly just in detectron)
   https://github.com/facebookresearch/Detectron/issues/143
   
   "Just insert a StopGradient op in the correct place(s). For example usage, see https://github.com/facebookresearch/Detectron/blob/master/detectron/modeling/ResNet.py#L105"
