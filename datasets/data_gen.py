@@ -4,7 +4,9 @@ import os
 import pandas as pd
 import numpy as np
 
-path= '' #put the root folder in HERE
+# corresponding to the present arrangement
+
+path= '..' #put the root folder in HERE
 
 # view = {'1B' #as default
     #     '1F': 'Front View',
@@ -32,13 +34,13 @@ vid = [1, 4, 5, 6, 7, 8, 9]
 
 annot= [None]*7
 
-annot0 = pd.read_csv(path+'\datasets\giro_data\annot\giro1_1.txt', header = None ,sep = ' ' )
-annot1 = pd.read_csv(path+'\datasets\giro_data\annot\giro4.txt', header = None ,sep = ' ' )
-annot2 = pd.read_csv(path+'\datasets\giro_data\annot\giro5.txt', header = None ,sep = ' ' )
-annot3 = pd.read_csv(path+'\datasets\giro_data\annot\giro6.txt', header = None ,sep = ' ' )
-annot4 = pd.read_csv(path+'\datasets\giro_data\annot\giro7.txt', header = None ,sep = ' ' )
-annot5 = pd.read_csv(path+'\datasets\giro_data\annot\giro8.txt', header = None ,sep = ' ' )
-annot6 = pd.read_csv(path+'\datasets\giro_data\annot\giro9.txt', header = None ,sep = ' ' )
+annot0 = pd.read_csv(path+'/datasets/giro_data/annot/giro1.txt', header = None ,sep = ' ' )
+annot1 = pd.read_csv(path+'/datasets/giro_data/annot/giro4.txt', header = None ,sep = ' ' )
+annot2 = pd.read_csv(path+'/datasets/giro_data/annot/giro5.txt', header = None ,sep = ' ' )
+annot3 = pd.read_csv(path+'/datasets/giro_data/annot/giro6.txt', header = None ,sep = ' ' )
+annot4 = pd.read_csv(path+'/datasets/giro_data/annot/giro7.txt', header = None ,sep = ' ' )
+annot5 = pd.read_csv(path+'/datasets/giro_data/annot/giro8.txt', header = None ,sep = ' ' )
+annot6 = pd.read_csv(path+'/datasets/giro_data/annot/giro9.txt', header = None ,sep = ' ' )
 
 annot=[annot0,annot1,annot2,annot3,annot4,annot5,annot6]
 
@@ -50,12 +52,36 @@ for k in range(len(annot)):
 
 file_name = ["1","4","5","6","7","8","9"]
 
-
+test_split=0.2 # test split, modify if needed
 
 for j in  range(len(length)):
     vPafy = pafy.new(urls[j])
     play = vPafy.getbest(preftype="mp4")
     cap = cv2.VideoCapture(play.url)
+    
+    basepath=os.path.join(path,'datasets/giro_data/images/giro'+file_name[j])
+    trainpath=os.path.join(basepath,'train')
+    testpath=os.path.join(basepath,'test')
+    
+    print('images saved to:')
+    print(trainpath)
+    print(testpath)
+    
+    try:
+        os.mkdir(basepath)
+    except:
+        print('exception: base directory already exists?')
+    try:
+        os.mkdir(trainpath)
+    except:
+        print('exception: train directory already exists?')    
+    try:
+        os.mkdir(testpath)
+    except:
+        print('exception: test directory already exists?')   
+        
+        
+        
     
     af=list(annot[j].frame.unique())
     #af = list(annot[j][annot[j]["object"] == view].frame.unique())
@@ -65,7 +91,12 @@ for j in  range(len(length)):
         if ret == False:
             break
         if i in af:
-           cv2.imwrite('giro'+str(file_name[j])+'_'+str(i)+'.jpg', frame)
+            if np.random.rand()<test_split:
+                cv2.imwrite(os.path.join(testpath,'giro'+str(file_name[j])+'_'+str(i)+'.jpg'), frame)
+            else:
+                cv2.imwrite(os.path.join(trainpath,'giro'+str(file_name[j])+'_'+str(i)+'.jpg'), frame)
         i+=1
+     
+    break # for testing purposes, use only the first video
 cap.release()
 cv2.destroyAllWindows() 
