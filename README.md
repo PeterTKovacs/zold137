@@ -54,9 +54,9 @@ TODO: add the VisDrone dataset too
 If you have set up the Docker container correctly, you can have a look at a sample training without downloading more data (as described above).
 
 1. go to [drone_demo](drone_demo)
-2. here you find the training script, [drone_demo/train_net.py] ,that is a modified version of the original, provided by the second predecessor 
+2. here you find the training script, __drone_demo/train_net.py__ ,that is a modified version of the original, provided by the second predecessor 
 3. this script uses the following resources: 
-    + the weighs, that will be copied to this directory by the daemon under the name of __visdrone_model_0360000.pth__
+    + the weights, that will be copied to this directory by the daemon under the name of __visdrone_model_0360000.pth__
     + a config file that is eaten by the model-building-machinery of the code. This contains all relevant information about the model. Eg. here is defined, from where the model gets the data to train and test on, what weigths in the backbone are frozen, etc. (Basically everything.) We will use [drone_demo/d_e2e_faster_rcnn_X_101_32x8d_FPN_1x_visdrone.yaml](drone_demo/d_e2e_faster_rcnn_X_101_32x8d_FPN_1x_visdrone.yaml). Due to scarcity of GPU resources on my local device, this config has really small batch sizes, number of workers, etc. _So on your device, you may want to modify these settings. Hints are given in the original maskrcnn-benchmark readme._
 4. run __python train_net.py --config-file d_e2e_faster_rcnn_X_101_32x8d_FPN_1x_visdrone.yaml__. If you have set up everything correctly, this will run a mini-training and testing session (for illustrative purposes)
     + before this, you may want to reduce the no. of test images, because testing is very slow with the default settings (on my device at least)
