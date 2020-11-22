@@ -42,7 +42,9 @@ Loading our custom data is implemented in [datasets/data_gen.py](datasets/data_g
 Before a serious training, you should obviously download the whole data.
 
 + to do so, you need to modify the code a bit: comment out __break__
++ you may consider modifying the train-test split ratio too
 + however, due to the dataset management of the current implementation, you won't be able to merge the data of the videos, this may be a TODO point, but since we are talking about fine-tuning, this may not be so much necessary
+
 
 TODO: add the VisDrone dataset too 
 + this requires a bit more work (implementing appropriate dataset class and rewriting configs - _guys (Ádám, Soma): you may want to ask for help before starting!_
