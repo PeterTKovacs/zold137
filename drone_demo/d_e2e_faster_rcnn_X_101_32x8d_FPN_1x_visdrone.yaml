@@ -25,8 +25,8 @@ MODEL:
     NUM_GROUPS: 32
     WIDTH_PER_GROUP: 8
 DATASETS:
-  TRAIN: ("giro", )
-  TEST: ("giro_val",)
+  TRAIN: ("giro1_train", )
+  TEST: ("giro1_test",)
 DATALOADER:
   SIZE_DIVISIBILITY: 32
   NUM_WORKERS: 0

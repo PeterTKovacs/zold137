@@ -1,7 +1,7 @@
 from maskrcnn_benchmark.data import datasets
 
-from .coco import coco_evaluation
-from .voc import voc_evaluation
+#from .coco import coco_evaluation
+#from .voc import voc_evaluation
 
 
 def evaluate(dataset, predictions, output_folder, **kwargs):
@@ -18,11 +18,11 @@ def evaluate(dataset, predictions, output_folder, **kwargs):
     args = dict(
         dataset=dataset, predictions=predictions, output_folder=output_folder, **kwargs
     )
-    if isinstance(dataset, datasets.COCODataset):
+#    if isinstance(dataset, datasets.COCODataset):
         return coco_evaluation(**args)
-    elif isinstance(dataset, datasets.PascalVOCDataset):
+#    elif isinstance(dataset, datasets.PascalVOCDataset):
         return voc_evaluation(**args)
-    elif isinstance(dataset,datasets.giro):
+    if isinstance(dataset,datasets.giro):
         print('ran giro evaluation placeholder')
         return(0)
     else:
