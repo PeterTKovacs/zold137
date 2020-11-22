@@ -32,13 +32,13 @@ vid = [1, 4, 5, 6, 7, 8, 9]
 
 annot= [None]*7
 
-annot0 = pd.read_csv(path+'\datasets\giro_data\images\giro1_1.txt', header = None ,sep = ' ' )
-annot1 = pd.read_csv(path+'\datasets\giro_data\images\giro4.txt', header = None ,sep = ' ' )
-annot2 = pd.read_csv(path+'\datasets\giro_data\images\giro5.txt', header = None ,sep = ' ' )
-annot3 = pd.read_csv(path+'\datasets\giro_data\images\giro6.txt', header = None ,sep = ' ' )
-annot4 = pd.read_csv(path+'\datasets\giro_data\images\giro7.txt', header = None ,sep = ' ' )
-annot5 = pd.read_csv(path+'\datasets\giro_data\images\giro8.txt', header = None ,sep = ' ' )
-annot6 = pd.read_csv(path+'\datasets\giro_data\images\giro9.txt', header = None ,sep = ' ' )
+annot0 = pd.read_csv(path+'\datasets\giro_data\annot\giro1_1.txt', header = None ,sep = ' ' )
+annot1 = pd.read_csv(path+'\datasets\giro_data\annot\giro4.txt', header = None ,sep = ' ' )
+annot2 = pd.read_csv(path+'\datasets\giro_data\annot\giro5.txt', header = None ,sep = ' ' )
+annot3 = pd.read_csv(path+'\datasets\giro_data\annot\giro6.txt', header = None ,sep = ' ' )
+annot4 = pd.read_csv(path+'\datasets\giro_data\annot\giro7.txt', header = None ,sep = ' ' )
+annot5 = pd.read_csv(path+'\datasets\giro_data\annot\giro8.txt', header = None ,sep = ' ' )
+annot6 = pd.read_csv(path+'\datasets\giro_data\annot\giro9.txt', header = None ,sep = ' ' )
 
 annot=[annot0,annot1,annot2,annot3,annot4,annot5,annot6]
 
