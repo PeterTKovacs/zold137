@@ -22,6 +22,9 @@ def evaluate(dataset, predictions, output_folder, **kwargs):
         return coco_evaluation(**args)
     elif isinstance(dataset, datasets.PascalVOCDataset):
         return voc_evaluation(**args)
+    elif isinstance(dataset,datasets.giro):
+        print('ran giro evaluation placeholder')
+        return(0)
     else:
         dataset_name = dataset.__class__.__name__
         raise NotImplementedError("Unsupported dataset type {}.".format(dataset_name))
