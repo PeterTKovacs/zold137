@@ -12,6 +12,8 @@ Few words about the repository structure below.
 
 This directory contains our code and documentation for data acquisition and basic processing.
 
+__BEHOLD: due to lincensing issues, we must not publish the annotations. They are avalable from a secret gist upon reasonable request__
+
 __description_of_datasets__ is our writeup about the data with a self-explaining name.
 
 In addition to this, we provide basic visualization in Jupyter Notebooks 'Saving_frames_and_drawing_boxes.ipynb' and 'Data_inspection.ipynb' for datasets MultiDrone and VisDrone respectively.
