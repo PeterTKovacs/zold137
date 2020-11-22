@@ -102,7 +102,7 @@ This directory is __not__ part of the 1<sup>st</sup> milestone. We started to ex
 
 May contain sharp edges, it is not recommended to look at it now.
 
----------------------- Original VisDrone Readme -------------------
+# ---------------------- Original VisDrone Readme -------------------
 
 This is a fork of maskrcnn-benchmark repository that is focused on detecting objects from drone view images. The model checkpoint is trained on the VisDrone dataset. 
 ![alt_text](drone_demo/drone_res.jpg)
