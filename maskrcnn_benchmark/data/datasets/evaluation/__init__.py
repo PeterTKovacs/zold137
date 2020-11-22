@@ -19,9 +19,9 @@ def evaluate(dataset, predictions, output_folder, **kwargs):
         dataset=dataset, predictions=predictions, output_folder=output_folder, **kwargs
     )
 #    if isinstance(dataset, datasets.COCODataset):
-        return coco_evaluation(**args)
+#        return coco_evaluation(**args)
 #    elif isinstance(dataset, datasets.PascalVOCDataset):
-        return voc_evaluation(**args)
+#        return voc_evaluation(**args)
     if isinstance(dataset,datasets.giro):
         print('ran giro evaluation placeholder')
         return(0)
