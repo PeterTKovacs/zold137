@@ -1,12 +1,82 @@
 # Object detection in drone-images
-### Homework Project of team 'zöld137'
+
+##  Prologue
 
 Our project aims to detect various objects in drone-captured images.
 
 We would like to solve this problem as a supervised task, so acquired two datasets containing pictures taken by drones. ('VisDrone' and 'MultiDrone'.)
 Both sets come with annotations, what means coordinates for bounding boxes and the ground-truth classes of annotated objects.
 
-Few words about the repository structure below.
+Our work is largely based on the following repository:
+https://github.com/oulutan/Drone_FasterRCNN
+
+this is in fact a fork of 
+https://github.com/facebookresearch/maskrcnn-benchmark
+
+Unfortunately, we had to implement many changes in the orignal code and it has become the easiest way to do so to upload the code instead of forking. (We have found the appropriate arrangement in a Docker-container and from that position, this was the easiest way to upload code.)
+
+Nevertheless, we are grateful for the creators and maintainers of both repositories.
+
+## How to use the codebase?
+
+In this section we introduce the basic functionality of the codebase. The nub of our project in a nutshell: we build our model on top of the second repository. This is beneficial, because the second author has released the weigths of a model of his, trained on the VisDrone dataset. 
+
+### Installation
+
+We think that using Docker containers is the only sensible solution.
+Because of the transfer-learning and our 'custom' dataset, matters are even more complicated, there are caveats that need extra attention.
+
+1. get the [docker/Dockerfile](Dockerfile), download it to your local device
+2. get the weigths for the model: https://drive.google.com/file/d/1SCJf2JJmyCbxpDuy4njFaDw7xPqurpaQ/view?usp=sharing into the _same_ directory which contains the Dockerfile (during building the Dockerimage, the daemon will look for it in that context!)
+3. get the link for the custom dataset annotations: as we work on custom data, we implemented the fetching of appropriate images in the Dockerfile. _However_, due to lincense issues, we must not publicly release the annotations. To circumvent this, the following scheme is implemented
+    + first, PM me (kptzeg@gmail.com) to request access to the annotations
+    + I will send the link to a private GithubGist, which contains the annot files
+    + __what you have to do__: edit the Dockerfile such that you paste this link into the appropriate place before building, so the annotations will be cloned into the container
+4. after the new Dockerfile and the weigths (~800 MB) are assembled in your directory, build the image with eg.: (from the parentdir) __sudo nvidia-docker build -t zold137 docker/__
+5. building is likely to take ~ 1 hour. After that, you have the image, which is roughly 12 GB
+    + during the building, a sample dataset from the custom data is downloaded too
+    
+### Fetching more data
+
+Loading our custom data is implemented in [datasets/data_gen.py](datasets/data_gen.py). For the installation procedure, only one video ('giro1') is processed.
+Before a serious training, you should obviously download the whole data.
+
++ to do so, you need to modify the code a bit: comment out __break__
++ however, due to the dataset management of the current implementation, you won't be able to merge the data of the videos, this may be a TODO point, but since we are talking about fine-tuning, this may not be so much necessary
+
+TODO: add the VisDrone dataset too 
++ this requires a bit more work (implementing appropriate dataset class and rewriting configs - _guys (Ádám, Soma): you may want to ask for help before starting!_
+
+### Sample training
+
+If you have set up the Docker container correctly, you can have a look at a sample training without downloading more data (as described above).
+
+1. go to [drone_demo](drone_demo)
+2. here you find the training script,[drone_demo/train_net.py] ,that is a modified version of the original, provided by the second predecessor 
+3. this script uses the following resources: 
+    + the weighs, that will be copied to this directory by the daemon under the name of __visdrone_model_0360000.pth__
+    + a config file that is eaten by the model-building-machinery of the code. This contains all relevant information about the model. Eg. here is defined, from where the model gets the data to train and test on, what weigths in the backbone are frozen, etc. (Basically everything.) We will use [drone_demo/d_e2e_faster_rcnn_X_101_32x8d_FPN_1x_visdrone.yaml](drone_demo/d_e2e_faster_rcnn_X_101_32x8d_FPN_1x_visdrone.yaml). Due to scarcity of GPU resources on my local device, this config has really small batch sizes, number of workers, etc. _So on your device, you may want to modify these settings. Hints are given in the original maskrcnn-benchmark readme._
+4. run __python train_net.py --config-file d_e2e_faster_rcnn_X_101_32x8d_FPN_1x_visdrone.yaml__. If you have set up everything correctly, this will run a mini-training and testing session (for illustrative purposes)
+    + before this, you may want to reduce the no. of test images, because testing is very slow with the default settings (on my device at least)
+    + to ensure smooth running two points have been solved in a very cheap manner (due to the almost-fatal time shortage)
+        ++ the evaluation of the testing - which is processing predictions etc. - is done with separate evaluation scripts. _Now, there is no such script for our custom dataset_ What is done is to notify the user on STDOUT that we reached the evaluation stage (TODO)
+        ++ because of throwing errors, the approporiate dataset object and respective methods and funcions are 'commented out'. I suspect that this is due to upgrades in the __cocoapi__ repostiory. Errors started popping when I built the API with the new, non-deprecated way (makefile instead of setup.py). This may be fixed, but not so important, because we won't tratin on COCO data.
+        
+This is the basics.
+
+
+### The model
+
+Thus, we mean to do _transfer-learning on that model_, because we only have access to limited GPU resorces.
+
+The model comes from the _Faster-RCNN_ family, a widely known architecture. It consits of three main parts:
+1. convolutional backbone - for feature extraction
+2. RPN - Region Proposal Network for the domains of interest on the picture
+3. ROI head - this last stage is generally responsible for the bounding-box regression and the classification
+
+In our (our predecessors') code, the model is generated from a config file with the machinery of the _maskrcnn-benchmark_ repository. The model weigths for the particular model we want to make transfer-learn are loaded. Details previously mentioned.
+
+
 
 ## zold137/datasets
 
