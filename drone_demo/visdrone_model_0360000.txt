@@ -1,0 +1,1 @@
+placeholder for model weigths: visdrone_model_0360000.pth
