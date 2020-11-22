@@ -80,6 +80,10 @@ The model comes from the _Faster-RCNN_ family, a widely known architecture. It c
 
 In our (our predecessors') code, the model is generated from a config file with the machinery of the _maskrcnn-benchmark_ repository. The model weigths for the particular model we want to make transfer-learn are loaded. Details previously mentioned.
 
+Obviously, the original model did not use the same classes as we did. The reason why the sample training works is because the class IDs of our data form a subset of the original (at least I guess so).
+
+This means that we will have to rebuild the last stages and transfer-learn them. This is not implemented yet, due to lack of time. (Setting up the enviromnet was a nightmare, with many modifications in the original Dockerfile. Moreover, the codebase is not too-well docmented so I had to explore the whole stuff. Finally the resoultion of this annotation business was a real pain-in-the-neck too.)
+
 
 
 ## zold137/datasets
