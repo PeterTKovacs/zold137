@@ -5,7 +5,7 @@ import os
 
 
 class DatasetCatalog(object):
-    DATA_DIR = "/Drone_FasterRCNN/datasets"
+    DATA_DIR = "/zold137/datasets"
     DATASETS = {
         "giro1_test":{
             "img_dir":"giro_data/images/giro1/test",
