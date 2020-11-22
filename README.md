@@ -61,8 +61,10 @@ If you have set up the Docker container correctly, you can have a look at a samp
 4. run __python train_net.py --config-file d_e2e_faster_rcnn_X_101_32x8d_FPN_1x_visdrone.yaml__. If you have set up everything correctly, this will run a mini-training and testing session (for illustrative purposes)
     + before this, you may want to reduce the no. of test images, because testing is very slow with the default settings (on my device at least)
     + to ensure smooth running two points have been solved in a very cheap manner (due to the almost-fatal time shortage)
+    
         ++ the evaluation of the testing - which is processing predictions etc. - is done with separate evaluation scripts. _Now, there is no such script for our custom dataset_ What is done is to notify the user on STDOUT that we reached the evaluation stage (TODO)
-        ++ because of throwing errors, the approporiate dataset object and respective methods and funcions are 'commented out'. I suspect that this is due to upgrades in the __cocoapi__ repostiory. Errors started popping when I built the API with the new, non-deprecated way (makefile instead of setup.py). This may be fixed, but not so important, because we won't tratin on COCO data.
+        
+        ++ because of throwing errors, the all but our custom dataset objects and respective methods and funcions are 'commented out'. I suspect that this is due to upgrades in the __cocoapi__ repostiory. Errors started popping when I built the API with the new, non-deprecated way (makefile instead of setup.py). This may be fixed, but not so important, because we won't tratin on COCO data.
         
 This is the basics.
 
