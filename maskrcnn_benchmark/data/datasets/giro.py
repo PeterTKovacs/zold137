@@ -9,7 +9,7 @@ class giro(object):
       
         self.root= root # directory for pictures
         self.img_fnames=list(os.listdir(root))
-        self.fname_to_index={idx:item for idx,item in enumerate(self.img_fnames)}
+        self.index_to_fname={idx:item for idx,item in enumerate(self.img_fnames)}
         
         annot = pd.read_csv(ann_file, header = None ,sep = ' ' )
         annot = annot.rename(columns={0: "dr1", 1: "frame", 2: "ID", 3: "X1", 4: "Y1", 5: "X2", 6: "Y2", 7: "dr2", 8: "object", 9: "dr3"})
@@ -46,30 +46,28 @@ class giro(object):
             return int(tmp[1][:-4])
         else:
             print('invalid filename')
+            return -1
 
     def __getitem__(self, idx): 
         
         # load the image as a PIL Image
     
-        image = Image.open(os.path.join(self.root,self.fname_to_index[idx]))
+        image = Image.open(os.path.join(self.root,self.index_to_fname[idx]))
 
         # load the bounding boxes as a list of list of boxes
         # in this case, for illustrative purposes, we use
         # x1, y1, x2, y2 order.
         
-        M_=self.boxes[self.boxes.frame==self.get_frame_no(self.fname_to_index[idx])]
+        M_=self.boxes[self.boxes.frame==self.get_frame_no(self.index_to_fname[idx])]
         m__=M_[["X1", "Y1", "X2", "Y2"]].values.tolist()
             
-           
-        
-        
         labels = torch.tensor([self.object_to_id[obj] for obj in list(M_['object'])])
         boxlist = BoxList(m__, image.size, mode="xyxy")
             
         # add the labels to the boxlist
         
         boxlist.add_field("labels", labels)
-	
+        
         if self.transforms:
             image, boxlist = self.transforms(image, boxlist)
         return image, boxlist, idx
@@ -80,7 +78,7 @@ class giro(object):
         # of the image, as it can be more efficient than loading the
         # image from disk
         
-        image = Image.open(os.path.join(self.root,self.fname_to_index[idx]))
+        image = Image.open(os.path.join(self.root,self.index_to_fname[idx]))
         width, height= image.size
         return {"height": height, "width": width}
 
