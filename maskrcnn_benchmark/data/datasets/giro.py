@@ -53,7 +53,8 @@ class giro(object):
         # load the image as a PIL Image
     
         image = Image.open(os.path.join(self.root,self.index_to_fname[idx]))
-
+        print("getitem")
+        print(self.index_to_fname[idx])
         # load the bounding boxes as a list of list of boxes
         # in this case, for illustrative purposes, we use
         # x1, y1, x2, y2 order.
@@ -79,6 +80,9 @@ class giro(object):
         # image from disk
         
         image = Image.open(os.path.join(self.root,self.index_to_fname[idx]))
+        print("get info")
+        print(self.index_to_fname[idx])
+
         width, height= image.size
         return {"height": height, "width": width}
 

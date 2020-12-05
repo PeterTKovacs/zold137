@@ -29,6 +29,9 @@ from maskrcnn_benchmark.utils.miscellaneous import mkdir
 def train(cfg, local_rank, distributed):
     model = build_detection_model(cfg)
     device = torch.device(cfg.MODEL.DEVICE)
+    for name,param in model.named_parameters():
+        if not "cls_score" in name:
+            param.requires_grad = False
     model.cuda()
 
     optimizer = make_optimizer(cfg, model)
@@ -167,6 +170,9 @@ def main():
     logger.info("Running with config:\n{}".format(cfg))
 
     model = train(cfg, args.local_rank, args.distributed)
+
+    for name,param in model.named_parameters():
+        print(name,param.requires_grad)
 
     if not args.skip_test:
         run_test(cfg, model, args.distributed)

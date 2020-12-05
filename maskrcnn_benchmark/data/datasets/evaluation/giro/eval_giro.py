@@ -32,7 +32,10 @@ def giro_evaluation(
     areas = {"all": "", "small": "s", "medium": "m", "large": "l"}
 
     for area, suffix in areas.items():
-        stats = evaluate_box_proposals(predictions, dataset, area=area, limit=limit)
+        if area!='all':
+            continue
+        print(len(predictions))
+        stats = evaluate_box_proposals(predictions, dataset, area=area)
         logger.info('box sizes: '+area)
         logger.info(stats)
         print('recall: %f'%stats['recalls'])
@@ -57,7 +60,7 @@ def accuracies(gt_labels,pred_labels):
 
 # inspired from Detectron
 def evaluate_box_proposals(
-    predictions, dataset, thresholds=None, area="all" # , limit=None : we're gonna consider all proposals, maybe not if too slow
+    predictions, dataset, thresholds=None, area="all", # , limit=None : we're gonna consider all proposals, maybe not if too slow
 ):
     """
     Rewritten to Giro needs.
@@ -95,10 +98,14 @@ def evaluate_box_proposals(
     gt_overlaps = []
     num_pos = 0
 
+    print(len(predictions))
     for image_id, prediction in enumerate(predictions):
+#        print('Jack Robinson')
         # image_id is presumably the same at the 0,... indices we used in dataloader
         # it is supplied y the tqdm dataloader
-
+#        print(prediction.fields())
+#        print(prediction.get_field("scores"))
+        print(image_id)
         img_info = dataset.get_img_info(image_id)
         image_width = img_info["width"]
         image_height = img_info["height"]
@@ -115,7 +122,7 @@ def evaluate_box_proposals(
         # for GT boxes, we will use the standard dataset utilities
         
         img_pil, gt_boxes, _ =dataset[image_id]
-        
+        print(_)
         gt_areas = gt_boxes.area() # standard boxlist utility, gives torch tensor
 
         if len(gt_boxes) == 0:
@@ -128,20 +135,23 @@ def evaluate_box_proposals(
         gt_labels=copy.deepcopy(gt_boxes.extra_fields['labels'])
         
         if len(gt_boxes) == 0:
+            print('leg(gt_boxes)==0')
             continue
 
         if len(prediction) == 0:
+            print('leg(prediction)==0')
             continue
 
 #         if limit is not None and len(prediction) > limit: won't do first - not to spoil gt labels
 #             prediction = prediction[:limit]
 
+        print(prediction)
+        print(gt_boxes)
         overlaps = boxlist_iou(prediction, gt_boxes)
 
         _gt_overlaps = torch.zeros(len(gt_boxes))
         best_match_cls_preds=torch.ones(len(gt_boxes))*-1. # need -1: it is possible that not all GT boxes get a match
         best_match_score=torch.zeros(len(gt_boxes))
-        
         
         for j in range(min(len(prediction), len(gt_boxes))):
             
@@ -168,7 +178,7 @@ def evaluate_box_proposals(
 
         # append recorded iou coverage level for given image
         gt_overlaps.append(_gt_overlaps) 
-        
+        print('gt_overlap appending')
     gt_overlaps = torch.cat(gt_overlaps, dim=0) # for the whole batch
     gt_overlaps, _ = torch.sort(gt_overlaps)
 

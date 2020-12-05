@@ -24,10 +24,13 @@ def compute_on_dataset(model, data_loader, device, timer=None):
             if timer:
                 timer.tic()
             output = model(images)
+            print(output)
             if timer:
                 torch.cuda.synchronize()
                 timer.toc()
             output = [o.to(cpu_device) for o in output]
+            print(output)
+            print(type(output[0]))
         results_dict.update(
             {img_id: result for img_id, result in zip(image_ids, output)}
         )
@@ -52,6 +55,7 @@ def _accumulate_predictions_from_multiple_gpus(predictions_per_gpu):
         )
 
     # convert to a list
+    print(image_ids)
     predictions = [predictions[i] for i in image_ids]
     return predictions
 
