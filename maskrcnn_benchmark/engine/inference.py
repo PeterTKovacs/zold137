@@ -24,13 +24,13 @@ def compute_on_dataset(model, data_loader, device, timer=None):
             if timer:
                 timer.tic()
             output = model(images)
-            print(output)
+#            print(output)
             if timer:
                 torch.cuda.synchronize()
                 timer.toc()
             output = [o.to(cpu_device) for o in output]
-            print(output)
-            print(type(output[0]))
+#            print(output)
+#            print(type(output[0]))
         results_dict.update(
             {img_id: result for img_id, result in zip(image_ids, output)}
         )

@@ -34,11 +34,11 @@ def giro_evaluation(
     for area, suffix in areas.items():
         if area!='all':
             continue
-        print(len(predictions))
+#        print(len(predictions))
         stats = evaluate_box_proposals(predictions, dataset, area=area)
         logger.info('box sizes: '+area)
         logger.info(stats)
-        print('recall: %f'%stats['recalls'])
+        print('mean recall: %f'%stats['recalls'].mean())
         acc1,acc2=accuracies(stats['best match labels'],stats["gt_labels"])
         print('accuracy on gt boxes:\n %f \t %f' % (acc1,acc2))
             
@@ -47,7 +47,10 @@ def giro_evaluation(
 def accuracies(gt_labels,pred_labels):
     
     if len(gt_labels)>0:
-        acc1=(gt_labels==pred_labels).float().sum()/float(len(gt_labels))
+        dn=float(len(gt_labels))
+        aaa=gt_labels.float()==pred_labels.float()
+        a1=aaa.float().sum()
+        acc1=a1/dn
         matches=(pred_labels>=0).float().sum()
         
         if matches>0:
@@ -98,17 +101,18 @@ def evaluate_box_proposals(
     gt_overlaps = []
     num_pos = 0
 
-    print(len(predictions))
+#    print(len(predictions))
     for image_id, prediction in enumerate(predictions):
 #        print('Jack Robinson')
         # image_id is presumably the same at the 0,... indices we used in dataloader
         # it is supplied y the tqdm dataloader
 #        print(prediction.fields())
 #        print(prediction.get_field("scores"))
-        print(image_id)
-        img_info = dataset.get_img_info(image_id)
-        image_width = img_info["width"]
-        image_height = img_info["height"]
+        img_pil, gt_boxes, _ =dataset[image_id]
+        image_width, image_height=gt_boxes.size
+#        img_info = dataset.get_img_info(image_id) !!! caused error because this is the raw size, not after transforms!
+#        image_width = img_info["width"]
+#        image_height = img_info["height"]
         prediction = prediction.resize((image_width, image_height)) # BoxList object
 
         # sort predictions in descending order
@@ -121,8 +125,8 @@ def evaluate_box_proposals(
 
         # for GT boxes, we will use the standard dataset utilities
         
-        img_pil, gt_boxes, _ =dataset[image_id]
-        print(_)
+#        img_pil, gt_boxes, _ =dataset[image_id]
+#        print(_)
         gt_areas = gt_boxes.area() # standard boxlist utility, gives torch tensor
 
         if len(gt_boxes) == 0:
@@ -144,9 +148,8 @@ def evaluate_box_proposals(
 
 #         if limit is not None and len(prediction) > limit: won't do first - not to spoil gt labels
 #             prediction = prediction[:limit]
-
-        print(prediction)
-        print(gt_boxes)
+#        print(prediction)
+#        print(gt_boxes)
         overlaps = boxlist_iou(prediction, gt_boxes)
 
         _gt_overlaps = torch.zeros(len(gt_boxes))
@@ -173,12 +176,12 @@ def evaluate_box_proposals(
             # mark the proposal box and the gt box as used
             overlaps[box_ind, :] = -1 # prediction
             overlaps[:, gt_ind] = -1  # gt
-            best_matc_cls_preds[gt_ind]=prediction.get_field('labels')[box_ind]
+            best_match_cls_preds[gt_ind]=prediction.get_field('labels')[box_ind]
             best_match_score[gt_ind]=prediction.get_field('scores')[box_ind]
 
         # append recorded iou coverage level for given image
         gt_overlaps.append(_gt_overlaps) 
-        print('gt_overlap appending')
+#        print('gt_overlap appending')
     gt_overlaps = torch.cat(gt_overlaps, dim=0) # for the whole batch
     gt_overlaps, _ = torch.sort(gt_overlaps)
 
