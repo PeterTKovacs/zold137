@@ -42,7 +42,7 @@ def giro_evaluation(
         acc1,acc2=accuracies(stats['best match labels'],stats["gt_labels"])
         print('accuracy on gt boxes:\n %f \t %f' % (acc1,acc2))
             
-    return 0
+    return acc1
 
 def accuracies(gt_labels,pred_labels):
     
@@ -99,6 +99,9 @@ def evaluate_box_proposals(
     assert area in areas, "Unknown area range: {}".format(area)
     area_range = area_ranges[areas[area]]
     gt_overlaps = []
+    gt_labels=[]
+    bm_cls_scores=[]
+    bm_cls_preds=[]
     num_pos = 0
 
 #    print(len(predictions))
@@ -136,7 +139,7 @@ def evaluate_box_proposals(
         gt_boxes = gt_boxes[valid_gt_inds] # hopefully takes care of labels too, since __get_item__ does that too
     
         num_pos += len(gt_boxes)
-        gt_labels=copy.deepcopy(gt_boxes.extra_fields['labels'])
+        gt_labels.append(copy.deepcopy(gt_boxes.extra_fields['labels']))
         
         if len(gt_boxes) == 0:
             print('leg(gt_boxes)==0')
@@ -179,11 +182,16 @@ def evaluate_box_proposals(
             best_match_cls_preds[gt_ind]=prediction.get_field('labels')[box_ind]
             best_match_score[gt_ind]=prediction.get_field('scores')[box_ind]
 
-        # append recorded iou coverage level for given image
+        # append recorded iou coverage level for given image, GT class, pred scrore, pred class
+        bm_cls_scores.append(best_match_score)
+        bm_cls_preds.append(best_match_cls_preds)
         gt_overlaps.append(_gt_overlaps) 
 #        print('gt_overlap appending')
     gt_overlaps = torch.cat(gt_overlaps, dim=0) # for the whole batch
-    gt_overlaps, _ = torch.sort(gt_overlaps)
+    gt_labels= torch.cat(gt_labels, dim=0)
+    bm_cls_scores=torch.cat(bm_cls_scores, dim=0)
+    bm_cls_preds=torch.cat(bm_cls_preds, dim=0)
+    #gt_overlaps, _ = torch.sort(gt_overlaps) # do not want to loose parallel info
 
     if thresholds is None:
         step = 0.05
@@ -191,7 +199,7 @@ def evaluate_box_proposals(
     recalls = torch.zeros_like(thresholds)
     # compute recall for each iou threshold
     for i, t in enumerate(thresholds):
-        recalls[i] = (gt_overlaps >= t).float().sum() / float(num_pos)
+        recalls[i] = (gt_overlaps >= t).float().sum() / float(num_pos) # all gt boxes in batch
     # ar = 2 * np.trapz(recalls, thresholds)
     ar = recalls.mean()
     return {
@@ -200,7 +208,7 @@ def evaluate_box_proposals(
         "thresholds": thresholds,
         "gt_overlaps": gt_overlaps,
         "gt_labels": gt_labels,
-        'best match labels':best_match_cls_preds,
-        'best match scores':best_match_score,
+        'best match labels':bm_cls_preds,
+        'best match scores':bm_cls_scores,
         "num_pos": num_pos,
     }

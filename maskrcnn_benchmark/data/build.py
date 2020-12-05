@@ -14,7 +14,7 @@ from .collate_batch import BatchCollator
 from .transforms import build_transforms
 
 
-def build_dataset(dataset_list, transforms, dataset_catalog, is_train=True):
+def build_dataset(dataset_list, transforms, dataset_catalog, is_train=True): # no is_valid - ok this way
     """
     Arguments:
         dataset_list (list[str]): Contains the names of the datasets, i.e.,
@@ -104,7 +104,7 @@ def make_batch_data_sampler(
     return batch_sampler
 
 
-def make_data_loader(cfg, is_train=True, is_distributed=False, start_iter=0):
+def make_data_loader(cfg, is_train=True,is_valid=False, is_distributed=False, start_iter=0):
     num_gpus = get_world_size()
     if is_train:
         images_per_batch = cfg.SOLVER.IMS_PER_BATCH
@@ -148,7 +148,14 @@ def make_data_loader(cfg, is_train=True, is_distributed=False, start_iter=0):
         "maskrcnn_benchmark.config.paths_catalog", cfg.PATHS_CATALOG, True
     )
     DatasetCatalog = paths_catalog.DatasetCatalog
-    dataset_list = cfg.DATASETS.TRAIN if is_train else cfg.DATASETS.TEST
+    
+#    dataset_list = cfg.DATASETS.TRAIN if is_train else cfg.DATASETS.TEST
+    if is_train:
+        dataset_list = cfg.DATASETS.TRAIN
+    elif is_valid:
+        dataset_list = cfg.DATASETS.VALID
+    else:
+        dataset_list = cfg.DATASETS.TEST
 
     transforms = build_transforms(cfg, is_train)
     datasets = build_dataset(dataset_list, transforms, DatasetCatalog, is_train)

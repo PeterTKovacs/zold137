@@ -27,6 +27,7 @@ MODEL:
 DATASETS:
   TRAIN: ("giro1_train", )
   TEST: ("giro1_test",)
+  VALID: ("giro1_valid",)
 DATALOADER:
   SIZE_DIVISIBILITY: 32
   NUM_WORKERS: 0

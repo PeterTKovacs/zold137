@@ -8,6 +8,9 @@ import torch.distributed as dist
 
 from maskrcnn_benchmark.utils.comm import get_world_size
 from maskrcnn_benchmark.utils.metric_logger import MetricLogger
+from .inference import inference
+from maskrcnn_benchmark.utils.comm import synchronize, get_rank
+import numpy as np
 
 
 def reduce_loss_dict(loss_dict):
@@ -35,8 +38,12 @@ def reduce_loss_dict(loss_dict):
     return reduced_losses
 
 
+# added custom dict for validation purposes
+
 def do_train(
+    cfg,
     model,
+    custom_dict,
     data_loader,
     optimizer,
     scheduler,
@@ -53,6 +60,9 @@ def do_train(
     model.train()
     start_training_time = time.time()
     end = time.time()
+    
+    maximal_val_accuracy=-2
+    
     for iteration, (images, targets, _) in enumerate(data_loader, start_iter):
         data_time = time.time() - end
         iteration = iteration + 1
@@ -103,8 +113,41 @@ def do_train(
             )
         if iteration % checkpoint_period == 0:
             checkpointer.save("model_{:07d}".format(iteration), **arguments)
-        if iteration == max_iter:
-            checkpointer.save("model_final", **arguments)
+            
+        if iteration % custom_dict['val_frequency']==0: #validation circle, copied from test
+            
+            logger.info("validation circle")
+            
+            data_loaders_val = make_data_loader(cfg, is_train=False,is_valid=True, is_distributed=False) # not distributed
+            val_dataset_names = cfg.DATASETS.VALID
+            val_accuracies=[]
+            
+            for dataset_name, data_loader_val in zip(val_dataset_names, data_loaders_val):
+                acc=inference(
+                model,
+                data_loader_val,
+                dataset_name=dataset_name,
+                iou_types=iou_types,
+                box_only=False if cfg.MODEL.RETINANET_ON else cfg.MODEL.RPN_ONLY,
+                device=cfg.MODEL.DEVICE,
+                expected_results=cfg.TEST.EXPECTED_RESULTS,
+                expected_results_sigma_tol=cfg.TEST.EXPECTED_RESULTS_SIGMA_TOL,
+                output_folder=output_folder,
+                )
+                val_accuracies.append(acc)
+            synchronize()
+            
+            logger.info("validation accuracy: %f"% np.mean(np.array(val_accuracies, dtype=float)))
+            
+            if np.mean(np.array(val_accuracies, dtype=float))>maximal_val_accuracy:
+                maximal_val_accuracy=np.mean(np.array(val_accuracies, dtype=float))
+                checkpointer.save(custom_dict["best_name"], **arguments)
+                logger.info('current record in accuracy, saving model to: ' + custom_dict["best_name"])
+                
+        if iteration == max_iter: 
+            checkpointer.save(custom_dict["final_name"], **arguments)
+            logger.info('final model, saving model to: ' + custom_dict["final_name"])
+           
 
     total_training_time = time.time() - start_training_time
     total_time_str = str(datetime.timedelta(seconds=total_training_time))

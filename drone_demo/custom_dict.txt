@@ -1,0 +1,4 @@
+to_unfreeze : cls_score, bbox_pred
+val_frequency : 200
+best_name : best_model
+final_name : final_model

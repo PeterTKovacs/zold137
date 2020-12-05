@@ -15,6 +15,10 @@ class DatasetCatalog(object):
             "img_dir":"giro_data/images/giro1/train",
             "ann_file":"giro_data/annot/giro1.txt"
         },
+        "giro1_valid":{
+            "img_dir":"giro_data/images/giro1/valid",
+            "ann_file":"giro_data/annot/giro1.txt"
+        },
         "giro4_test":{
             "img_dir":"giro_data/images/giro4/test",
             "ann_file":"giro_data/annot/giro4.txt"
