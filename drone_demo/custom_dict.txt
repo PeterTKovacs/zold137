@@ -1,4 +1,6 @@
-to_unfreeze : cls_score, bbox_pred
-val_frequency : 200
+to_unfreeze : bbox_pred
+val_dataset : giro1_valid
+val_frequency : 15
 best_name : best_model
 final_name : final_model
+reload : best_model.pth

@@ -25,15 +25,17 @@ class giro(object):
                             '2': ' Bicycle Crowd',
                             '5H': 'High-Density Human Crowd',
                             '5L': 'Low-Density Human Crowd',
-                            '0': 'irrelevant TV graphics'}
-        self.object_to_id={'1F': 0,
+                            '0': 'irrelevant TV graphics',
+                           '00':'__background'}
+        self.object_to_id={'1F': 8,
                             '1B': 1,
                             '1L': 2,
                             '1R': 3,
                             '2': 4,
                             '5H': 5,
                             '5L': 6,
-                            '0': 7}
+                            '0': 7,
+                             '00':0}
 
     def __len__(self):
         return len(self.img_fnames)

@@ -31,9 +31,15 @@ from maskrcnn_benchmark.utils.miscellaneous import mkdir
 
 def train(cfg, custom_dict, local_rank, distributed):
     model = build_detection_model(cfg)
+    # right now, we will have 8 classes, background may cause big problems
+    model.roi_heads.box.predictor.cls_score=torch.nn.Linear(1024,9)
+    model.roi_heads.box.predictor.bbox_pred=torch.nn.Linear(1024,36)
     device = torch.device(cfg.MODEL.DEVICE)
-    
+    if 'reload' in custom_dict.keys():
+        model.load_state_dict(torch.load(custom_dict['reload']),strict=False)
+ 
     for name,param in model.named_parameters():
+        print(name,param.size())
         clashes=[to_unfreeze in name for to_unfreeze in custom_dict['to_unfreeze']]
         if True in clashes:
             param.requires_grad = True
@@ -194,7 +200,7 @@ def main():
 
     cfg.merge_from_file(args.config_file)
    # config_file = "e2e_faster_rcnn_X_101_32x8d_FPN_1x_visdrone.yaml"
-    cfg.merge_from_list(["MODEL.WEIGHT", args.weigths])
+    cfg.merge_from_list(["MODEL.WEIGHT", args.weights])
     #cfg.merge_from_list(args.opts)
     cfg.freeze()
 

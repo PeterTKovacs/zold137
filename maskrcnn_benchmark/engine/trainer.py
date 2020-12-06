@@ -11,6 +11,7 @@ from maskrcnn_benchmark.utils.metric_logger import MetricLogger
 from .inference import inference
 from maskrcnn_benchmark.utils.comm import synchronize, get_rank
 import numpy as np
+from maskrcnn_benchmark.data import make_data_loader
 
 
 def reduce_loss_dict(loss_dict):
@@ -116,10 +117,11 @@ def do_train(
             
         if iteration % custom_dict['val_frequency']==0: #validation circle, copied from test
             
+            model.eval()
             logger.info("validation circle")
+            val_dataset_names = tuple([custom_dict["val_dataset"] for i in range(1)])
+            data_loaders_val = make_data_loader(cfg, is_train=False,is_valid=True,vallist=val_dataset_names, is_distributed=False) # not distributed
             
-            data_loaders_val = make_data_loader(cfg, is_train=False,is_valid=True, is_distributed=False) # not distributed
-            val_dataset_names = cfg.DATASETS.VALID
             val_accuracies=[]
             
             for dataset_name, data_loader_val in zip(val_dataset_names, data_loaders_val):
@@ -127,12 +129,12 @@ def do_train(
                 model,
                 data_loader_val,
                 dataset_name=dataset_name,
-                iou_types=iou_types,
+                iou_types=("bbox",),
                 box_only=False if cfg.MODEL.RETINANET_ON else cfg.MODEL.RPN_ONLY,
                 device=cfg.MODEL.DEVICE,
                 expected_results=cfg.TEST.EXPECTED_RESULTS,
                 expected_results_sigma_tol=cfg.TEST.EXPECTED_RESULTS_SIGMA_TOL,
-                output_folder=output_folder,
+                output_folder=None,
                 )
                 val_accuracies.append(acc)
             synchronize()
@@ -144,6 +146,7 @@ def do_train(
                 checkpointer.save(custom_dict["best_name"], **arguments)
                 logger.info('current record in accuracy, saving model to: ' + custom_dict["best_name"])
                 
+            model.train() # set back to train mode
         if iteration == max_iter: 
             checkpointer.save(custom_dict["final_name"], **arguments)
             logger.info('final model, saving model to: ' + custom_dict["final_name"])
