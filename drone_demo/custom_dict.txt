@@ -1,4 +1,6 @@
-to_unfreeze : cls_score, bbox_pred
-val_frequency : 200
-best_name : best_model
-final_name : final_model
+to_unfreeze : roi_heads , rpn.head
+val_dataset : giro4_valid
+val_frequency : 100
+best_name : _best_acc_r2
+final_name : final_mode_r2
+reload : r1_fin.pth

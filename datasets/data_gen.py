@@ -52,9 +52,10 @@ for k in range(len(annot)):
 
 file_name = ["1","4","5","6","7","8","9"]
 
-test_split=0.2 # test split, modify if needed
-
-for j in  range(len(length)):
+test_split=0.1 # test split, modify if needed
+val_split=0.05
+#for j in  range(len(length)):
+for j in  [5,6]:
     vPafy = pafy.new(urls[j])
     play = vPafy.getbest(preftype="mp4")
     cap = cv2.VideoCapture(play.url)
@@ -62,6 +63,7 @@ for j in  range(len(length)):
     basepath=os.path.join(path,'datasets/giro_data/images/giro'+file_name[j])
     trainpath=os.path.join(basepath,'train')
     testpath=os.path.join(basepath,'test')
+    valpath=os.path.join(basepath,'valid')
     
     print('images saved to:')
     print(trainpath)
@@ -79,7 +81,10 @@ for j in  range(len(length)):
         os.mkdir(testpath)
     except:
         print('exception: test directory already exists?')   
-        
+    try:
+        os.mkdir(valpath)
+    except:
+        print('exception: test directory already exists?')   
         
         
     
@@ -91,12 +96,15 @@ for j in  range(len(length)):
         if ret == False:
             break
         if i in af:
-            if np.random.rand()<test_split:
+            decision_pm=np.random.rand()
+            if decision_pm<test_split:
                 cv2.imwrite(os.path.join(testpath,'giro'+str(file_name[j])+'_'+str(i)+'.jpg'), frame)
-            else:
+            elif decision_pm>test_split+val_split:
                 cv2.imwrite(os.path.join(trainpath,'giro'+str(file_name[j])+'_'+str(i)+'.jpg'), frame)
+            else:
+                cv2.imwrite(os.path.join(valpath,'giro'+str(file_name[j])+'_'+str(i)+'.jpg'), frame)
         i+=1
      
-    break # for testing purposes, use only the first video
+   # break # for testing purposes, use only the first video
 cap.release()
 cv2.destroyAllWindows() 
