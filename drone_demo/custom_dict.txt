@@ -1,6 +1,0 @@
-to_unfreeze : roi_heads , rpn.head
-val_dataset : giro1_valid
-val_frequency : 40
-best_name : _best_acc_r2
-final_name : final_mode_r2
-reload : r1_fin.pth
