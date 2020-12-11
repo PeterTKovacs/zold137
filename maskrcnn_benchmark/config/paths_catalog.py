@@ -27,6 +27,11 @@ class DatasetCatalog(object):
             "img_dir":"giro_data/images/giro4/train",
             "ann_file":"giro_data/annot/giro4.txt"
         },
+        "giro4_valid":{
+            "img_dir":"giro_data/images/giro4/valid",
+            "ann_file":"giro_data/annot/giro4.txt"
+        },
+
         "giro5_test":{
             "img_dir":"giro_data/images/giro5/test",
             "ann_file":"giro_data/annot/giro5.txt"
@@ -35,6 +40,11 @@ class DatasetCatalog(object):
             "img_dir":"giro_data/images/giro5/train",
             "ann_file":"giro_data/annot/giro5.txt"
         },
+        "giro5_valid":{
+            "img_dir":"giro_data/images/giro5/valid",
+            "ann_file":"giro_data/annot/giro5.txt"
+        },
+
         "giro6_test":{
             "img_dir":"giro_data/images/giro6/test",
             "ann_file":"giro_data/annot/giro6.txt"
@@ -59,6 +69,11 @@ class DatasetCatalog(object):
             "img_dir":"giro_data/images/giro8/train",
             "ann_file":"giro_data/annot/giro8.txt"
         },
+        "giro8_valid":{
+            "img_dir":"giro_data/images/giro8/valid",
+            "ann_file":"giro_data/annot/giro8.txt"
+        },
+
         "giro9_test":{
             "img_dir":"giro_data/images/giro9/test",
             "ann_file":"giro_data/annot/giro9.txt"
@@ -67,6 +82,11 @@ class DatasetCatalog(object):
             "img_dir":"giro_data/images/giro9/train",
             "ann_file":"giro_data/annot/giro9.txt"
         },
+        "giro9_valid":{
+            "img_dir":"giro_data/images/giro9/valid",
+            "ann_file":"giro_data/annot/giro9.txt"
+        },
+
         "coco_2017_train": {
             "img_dir": "coco/train2017",
             "ann_file": "coco/annotations/instances_train2017.json"

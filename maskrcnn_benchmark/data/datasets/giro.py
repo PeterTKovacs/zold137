@@ -14,7 +14,8 @@ class giro(object):
         annot = pd.read_csv(ann_file, header = None ,sep = ' ' )
         annot = annot.rename(columns={0: "dr1", 1: "frame", 2: "ID", 3: "X1", 4: "Y1", 5: "X2", 6: "Y2", 7: "dr2", 8: "object", 9: "dr3"})
         annot.drop(columns = ["dr1", "dr2", "dr3"], inplace = True)
-        
+ #       annot=annot[annot['object']!='-']
+
         self.boxes=annot
         self.transforms=transforms
         self.object_to_cat={
@@ -25,15 +26,17 @@ class giro(object):
                             '2': ' Bicycle Crowd',
                             '5H': 'High-Density Human Crowd',
                             '5L': 'Low-Density Human Crowd',
-                            '0': 'irrelevant TV graphics'}
-        self.object_to_id={'1F': 0,
+                            '0': 'irrelevant TV graphics',
+                           '00':'__background'}
+        self.object_to_id={'1F': 8,
                             '1B': 1,
                             '1L': 2,
                             '1R': 3,
                             '2': 4,
                             '5H': 5,
                             '5L': 6,
-                            '0': 7}
+                            '0': 7,
+                             '00':0}
 
     def __len__(self):
         return len(self.img_fnames)
