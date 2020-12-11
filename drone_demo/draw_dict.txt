@@ -1,0 +1,5 @@
+reload : r2_best.pth
+out_path : .
+in_path : /zold137/datasets/giro_data/images/giro1/test
+annfile : /zold137/datasets/giro_data/annot/giro1.txt
+no_pred : 2
