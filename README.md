@@ -1,8 +1,8 @@
 # Cyclist detection in aerial images
 
-Project of team 'zold137' in course BMWVITMAV45.
+__Project of team 'zold137' in course BMWVITMAV45.__
 
-Team members: (Soma Juhász, Ádám Zsolt Kővári), Péter Tamás Kovács
+__Team members__: (Soma Juhász, Ádám Zsolt Kővári), Péter Tamás Kovács
 
 __Note__: unfortunately, Soma and Ádám left the team before submission. They contributed equally in milestone 1. In milestone 2, their most important contribution was the script fetching images from Youtube. (That had to be seriously corrected in some sense much later by me - see summarizing report). After milestone 2, they abandoned me. 
 
@@ -11,6 +11,8 @@ I believe that they did not give much meaningful contribution to the project at 
 ## A word of advice for the reader
 
 This readme is the most important source of information about what pieces of code and when to run.
+
+To be able to run anything, you have to install the environment via the Dockerfile, as elaborated later.
 
 As a rule of thumb, scripts you may want to run (besides data manipulation) are in [drone_demo](drone_demo). There is the [drone_demo/summary.pdf](drone_demo/summary.pdf) report too, in PDF and the TeX source is attached too.
 
@@ -98,6 +100,16 @@ This whole procedure is performed by the [drone_demo/custom_train.py](drone_demo
     + _final_name_: name of final model analogously
     + _reload_: which model to reload (if none, delete this row)
     
+    
+__Your first training:__  obviously, when just starting, you won't have anything to reload, just delete the respective row. I is also advised to train first with ___roi_heads.box.predictor___ unfrozen only then these weights are 'factory new', in the part of the model that is newly added.
+It is safe to set LR in the config to be __BASE_LR: 4e-05__
+
+Obviously, you may want to fetch more data than the basic _before training_. Vary _val_frequency_ as you like. As it will be obvious from the applying section, you won't be able to reproduce the exact datasets I used unless you ask me for the frame numbers is the videos.
+
+When you specify the testset(s) too, testing is automatically done for the metrics introduced in the report.
+
+Before starting, you may want to take a look at the [drone_demo/log.txt](drone_demo/log.txt) logfile conatining many-many trains, inferences and more.
+ 
 __What you definitely will have to do:__ before every training, delete 'last_checkpoint' directory that is produced by the checkpointer. For some inexplainable reason, loading weights is in default setting done by the checkpointer and this is the way to circumvent the problems it causes. (For more details, refer to [drone_demo/custom_train.py](drone_demo/custom_train.py)) 
 
 This code will also do testing as default, using datasets specified in the config file.
