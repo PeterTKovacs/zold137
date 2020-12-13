@@ -12,9 +12,11 @@ I believe that they did not give much meaningful contribution to the project at 
 
 This readme is the most important source of information about what pieces of code and when to run.
 
+You shall only consider the __main__ branch.
+
 To be able to run anything, you have to install the environment via the Dockerfile, as elaborated later.
 
-As a rule of thumb, scripts you may want to run (besides data manipulation) are in [drone_demo](drone_demo). There is the [drone_demo/summary.pdf](drone_demo/summary.pdf) report too, in PDF and the TeX source is attached too.
+As a rule of thumb, scripts you may want to run (besides data manipulation) are in [drone_demo](drone_demo). There is the [drone_demo/summary.pdf](drone_demo/summary.pdf) report too, in PDF and the TeX source is attached too. (I am super sorry to realise at 23:54 13.12.2020 that the name of the author is the dummy one given by the NeurIPS2020 template, that I don't have time to correct)
 
 The below introduction gives a solid idea of how to install the environment we used and how to train and infer with my code snippets. Using callbacks will be introduced too.
 
