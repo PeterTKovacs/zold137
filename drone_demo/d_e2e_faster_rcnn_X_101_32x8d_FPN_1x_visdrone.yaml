@@ -25,16 +25,16 @@ MODEL:
     NUM_GROUPS: 32
     WIDTH_PER_GROUP: 8
 DATASETS:
-  TRAIN: ("giro1_valid",)
+  TRAIN: ("giro1_train", "giro4_train", "giro8_train",)
   TEST: ("giro1_test","giro4_test","giro8_test",)
 DATALOADER:
   SIZE_DIVISIBILITY: 32
   NUM_WORKERS: 0
 SOLVER:
-  BASE_LR: 0.00000008
+  BASE_LR: 0.00004
   WEIGHT_DECAY: 0.0001
   STEPS: (480000, 640000,)
-  MAX_ITER: 40000
-  IMS_PER_BATCH: 1
+  MAX_ITER: 1600
+  IMS_PER_BATCH: 2
 TEST:
   IMS_PER_BATCH: 1

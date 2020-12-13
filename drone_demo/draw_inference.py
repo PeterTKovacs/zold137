@@ -153,6 +153,7 @@ def main():
         print('no gt boxes: %d' % len(boxlist))
         print(boxlist.bbox)
         print('no pred boxes: %d' % len(predboxes))
+        print(predboxes.get_field('scores'))
         print(predboxes.bbox)
         print('saving pic to: '+os.path.join(out_path,'pred_'+dataset.index_to_fname[idx]))
         Image.fromarray(picture).save(os.path.join(out_path,'pred_'+dataset.index_to_fname[idx]))
