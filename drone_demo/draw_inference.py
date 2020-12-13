@@ -40,6 +40,7 @@ def main():
         help="path to config file",
         type=str,
     )
+    parser.add_argument("--threshold", type=float, default=0.95)
     parser.add_argument("--local_rank", type=int, default=0)
     parser.add_argument(
         "--skip-test",
@@ -126,7 +127,7 @@ def main():
     dataset=giro(ann_file=annfile,root=in_path,transforms=transform)
     ind_=len(dataset)-1
     for i in range(min(len(dataset),no_pred)):
-        ind_-=50
+        ind_-=10
         image, boxlist, idx=dataset[ind_]
         print('inference for: '+dataset.index_to_fname[idx])
         image_cv2=cv2.imread(os.path.join(in_path,dataset.index_to_fname[idx]))
@@ -147,7 +148,7 @@ def main():
         
         predboxes=predboxes.to('cpu')
 
-        picture=evalpipe(image_cv2,predboxes,threshold=0.8) # 
+        picture=evalpipe(image_cv2,predboxes,threshold=args.threshold) # 
         picture=overlay_boxes(image_cv2,boxlist,gt=True)
         print('no gt boxes: %d' % len(boxlist))
         print(boxlist.bbox)

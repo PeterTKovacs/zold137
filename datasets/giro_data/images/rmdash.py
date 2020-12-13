@@ -2,7 +2,7 @@ import pandas as pd
 import os
 import shutil
 
-datasets=['giro5','giro8','giro9']
+datasets=['giro1','giro8','giro4']
 subfolders=['train', 'test', 'valid']
 rootdir='.'
 

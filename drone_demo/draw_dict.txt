@@ -1,5 +1,5 @@
-reload : r2_best.pth
-out_path : .
+reload : _best_acc_r5_v6.pth
+out_path : ./pimg
 in_path : /zold137/datasets/giro_data/images/giro1/test
 annfile : /zold137/datasets/giro_data/annot/giro1.txt
-no_pred : 2
+no_pred : 15

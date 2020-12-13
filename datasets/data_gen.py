@@ -55,7 +55,7 @@ file_name = ["1","4","5","6","7","8","9"]
 test_split=0.1 # test split, modify if needed
 val_split=0.05
 #for j in  range(len(length)):
-for j in  [5,6]:
+for j in  [0,1,5,6]:
     vPafy = pafy.new(urls[j])
     play = vPafy.getbest(preftype="mp4")
     cap = cv2.VideoCapture(play.url)

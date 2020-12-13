@@ -31,6 +31,11 @@ from maskrcnn_benchmark.utils.miscellaneous import mkdir
 
 def train(logger,cfg, custom_dict, local_rank, distributed):
     model = build_detection_model(cfg)
+
+# maybe this is fucking with us
+
+    dummy_checkpointer = DetectronCheckpointer(cfg, model, save_dir='.')
+    _ = dummy_checkpointer.load(cfg.MODEL.WEIGHT)
     # right now, we will have 8 classes, background may cause big problems
     model.roi_heads.box.predictor.cls_score=torch.nn.Linear(1024,9)
     model.roi_heads.box.predictor.bbox_pred=torch.nn.Linear(1024,36)
@@ -69,7 +74,7 @@ def train(logger,cfg, custom_dict, local_rank, distributed):
     checkpointer = DetectronCheckpointer(
         cfg, model, optimizer, scheduler, output_dir, save_to_disk
     )
-#    extra_checkpoint_data = checkpointer.load(cfg.MODEL.WEIGHT)
+  #  extra_checkpoint_data = checkpointer.load(cfg.MODEL.WEIGHT)
     arguments.update(model.state_dict())
 
     data_loader = make_data_loader(
@@ -204,6 +209,10 @@ def main():
    # config_file = "e2e_faster_rcnn_X_101_32x8d_FPN_1x_visdrone.yaml"
     cfg.merge_from_list(["MODEL.WEIGHT", args.weights])
     #cfg.merge_from_list(args.opts)
+#    cfg['MODEL']['RPN']['FG_IOU_THRESHOLD']=0.2
+#    cfg['MODEL']['RPN']['BG_IOU_THRESHOLD']=0.1
+#    cfg['MODEL']['RPN']['BATCH_SIZE_PER_IMAGE']=50
+#    cfg['MODEL']['RPN']['POSITIVE_FRACTION']=0.5
     cfg.freeze()
 
     output_dir = cfg.OUTPUT_DIR

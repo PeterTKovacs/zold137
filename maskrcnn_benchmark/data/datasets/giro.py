@@ -54,8 +54,8 @@ class giro(object):
     def __getitem__(self, idx): 
         
         # load the image as a PIL Image
-    
-        image = Image.open(os.path.join(self.root,self.index_to_fname[idx]))
+        # DAMN! annotations have been prepared in 1920x1080 so we must resize pics to this size
+        image = Image.open(os.path.join(self.root,self.index_to_fname[idx])).resize((1920,1080))
 
         # load the bounding boxes as a list of list of boxes
         # in this case, for illustrative purposes, we use
