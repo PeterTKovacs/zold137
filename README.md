@@ -1,8 +1,21 @@
-# Object detection in drone-images
+# Cyclist detection in aerial images
 
-__This ain't the final version.__
+Project of team 'zold137' in course BMWVITMAV45.
 
-__That will be submitted by 13.12.2020, according to the course requirements stated on the homepage and orally by the lecturers. __
+Team members: (Soma Juhász, Ádám Zsolt Kővári), Péter Tamás Kovács
+
+__Note__: unfortunately, Soma and Ádám left the team before submission. They contributed equally in milestone 1. In milestone 2, their most important contribution was the script fetching images from Youtube. (That had to be seriously corrected in some sense much later by me - see summarizing report). After milestone 2, they abandoned me. 
+
+I believe that they did not give much meaningful contribution to the project at all.
+
+## A word of advice for the reader
+
+This readme is the most important source of information about what pieces of code and when to run.
+
+As a rule of thumb, scripts you may want to run (besides data manipulation) are in [drone_demo]. There is the [drone_demo/summary.pdf](summarizing report) too, in PDF and the TeX source is attached too.
+
+The below introduction gives a solid idea of how to install the environment we used and how to train and infer with my code snippets. Using callbacks will be introduced too.
+
 
 ##  Prologue
 
@@ -47,30 +60,46 @@ Before a serious training, you should obviously download the whole data.
 
 + to do so, you need to modify the code a bit: comment out __break__
 + you may consider modifying the train-test split ratio too
-+ however, due to the dataset management of the current implementation, you won't be able to merge the data of the videos, this may be a TODO point, but since we are talking about fine-tuning, this may not be so much necessary
++ however, due to the dataset management of the current implementation, you won't be able to merge the data of the videos, but this can be done easily when doing training: just add the desired datasets into the config file's (eg. [drone_demo/d_e2e_faster_rcnn_X_101_32x8d_FPN_1x_visdrone.yaml](drone_demo/d_e2e_faster_rcnn_X_101_32x8d_FPN_1x_visdrone.yaml) appropriate row
++ validation set has to be given in the [drone_demo/custom_dict.txt](custom dict), see later the details
 
+### Training your model
 
-TODO: add the VisDrone dataset too 
-+ this requires a bit more work (implementing appropriate dataset class and rewriting configs - _guys (Ádám, Soma): you may want to ask for help before starting!_
+This whole procedure is performed by the [drone_demo/custom_train.py](drone_demo/custom_train.py). The main idea is to pass arguments in two ways:
 
-### Sample training
++ by the parser, eg. a sample call reads as:
 
-If you have set up the Docker container correctly, you can have a look at a sample training without downloading more data (as described above).
+    python custom_train.py --config-file d_e2e_faster_rcnn_X_101_32x8d_FPN_1x_visdrone.yaml --weights visdrone_model_0360000.pth --custom-dict custom_dict.txt
 
-1. go to [drone_demo](drone_demo)
-2. here you find the training script, __drone_demo/train_net.py__ ,that is a modified version of the original, provided by the second predecessor 
-3. this script uses the following resources: 
-    + the weights, that will be copied to this directory by the daemon under the name of __visdrone_model_0360000.pth__
-    + a config file that is eaten by the model-building-machinery of the code. This contains all relevant information about the model. Eg. here is defined, from where the model gets the data to train and test on, what weigths in the backbone are frozen, etc. (Basically everything.) We will use [drone_demo/d_e2e_faster_rcnn_X_101_32x8d_FPN_1x_visdrone.yaml](drone_demo/d_e2e_faster_rcnn_X_101_32x8d_FPN_1x_visdrone.yaml). Due to scarcity of GPU resources on my local device, this config has really small batch sizes, number of workers, etc. _So on your device, you may want to modify these settings. Hints are given in the original maskrcnn-benchmark readme._
-4. run __python train_net.py --config-file d_e2e_faster_rcnn_X_101_32x8d_FPN_1x_visdrone.yaml__. If you have set up everything correctly, this will run a mini-training and testing session (for illustrative purposes)
-    + before this, you may want to reduce the no. of test images, because testing is very slow with the default settings (on my device at least)
-    + to ensure smooth running two points have been solved in a very cheap manner (due to the almost-fatal time shortage)
+    + Here, the config file is basically the DNA of your model, containing all relevant info to build it
+    + _weights_ gives the file that contains the original VisDrone weigths 
+    + _custom_dict_ contains additional information on the model building and training
     
-        ++ the evaluation of the testing - which is processing predictions etc. - is done with separate evaluation scripts. _Now, there is no such script for our custom dataset_.  What is done is to notify the user on STDOUT that we reached the evaluation stage (TODO)
-        
-        ++ because of throwing errors, all but our custom dataset objects and respective methods and funcions are 'commented out'. I suspect that this is due to upgrades in the __cocoapi__ repostiory. Errors started popping when I built the API with the new, non-deprecated way (makefile instead of setup.py). This may be fixed, but not so important, because we won't tratin on COCO data.
-        
-This is the basics.
++ by _custom_dict.txt_ [drone_demo/custom_dict.txt](drone_demo/custom_dict.txt), sample file:
+
+    to_unfreeze : roi, rpn
+    
+    val_dataset : giro8_valid
+    
+    val_frequency : 140
+    
+    best_name : _best_acc_r5_v8
+    
+    final_name : final_mode_r5_v8
+    
+    reload : _best_acc_r5_v7.pth
+    
+    + _to_unfreeze_ : named patrameters of the model containing these keywords will be unfrozen
+    + _val_dataset_:  the validation dataset, see [maskrcnn_benchmark/config/paths_catalog.py](maskrcnn_benchmark/config/paths_catalog.py) for what's allowed
+    + _val_frequency_: the number of batches after which validation is performed
+    + _best_name_ name under which to save __best accuracy__ model, into [drone_demo](drone_demo)
+    + _final_name_: name of final model analogously
+    + _reload_: which model to reload (if none, delete this row)
+    
+__What you definitely will have to do:__ before every training, delete 'last_checkpoint' directory that is produced by the checkpointer. For some inexplainable reason, loading weights is in default setting done by the checkpointer and this is the way to circumvent the problems it causes. (For more details, refer to [drone_demo/custom_train.py](drone_demo/custom_train.py)) 
+
+This code will also do testing as default, using datasets specified in the config file
+    
 
 
 ### The model
