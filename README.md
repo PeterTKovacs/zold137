@@ -1,5 +1,9 @@
 # Object detection in drone-images
 
+__This ain't the final version.__
+
+__That will be submitted by 13.12.2020, according to the course requirements stated on the homepage and orally by the lecturers. __
+
 ##  Prologue
 
 Our project aims to detect various objects in drone-captured images.
