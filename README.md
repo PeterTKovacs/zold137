@@ -12,7 +12,7 @@ I believe that they did not give much meaningful contribution to the project at 
 
 This readme is the most important source of information about what pieces of code and when to run.
 
-As a rule of thumb, scripts you may want to run (besides data manipulation) are in [drone_demo]. There is the [drone_demo/summary.pdf](summarizing report) too, in PDF and the TeX source is attached too.
+As a rule of thumb, scripts you may want to run (besides data manipulation) are in [drone_demo](drone_demo). There is the [drone_demo/summary.pdf](drone_demo/summary.pdf) report too, in PDF and the TeX source is attached too.
 
 The below introduction gives a solid idea of how to install the environment we used and how to train and infer with my code snippets. Using callbacks will be introduced too.
 
@@ -63,6 +63,8 @@ Before a serious training, you should obviously download the whole data.
 + however, due to the dataset management of the current implementation, you won't be able to merge the data of the videos, but this can be done easily when doing training: just add the desired datasets into the config file's (eg. [drone_demo/d_e2e_faster_rcnn_X_101_32x8d_FPN_1x_visdrone.yaml](drone_demo/d_e2e_faster_rcnn_X_101_32x8d_FPN_1x_visdrone.yaml) appropriate row
 + validation set has to be given in the [drone_demo/custom_dict.txt](custom dict), see later the details
 
+__Very importantly__: you will have to clean data: remove frames with unidentified ('-') class on them (they will cause error) _and_ removing images that are not aerial images. For these purposes, helper scripts are included [datasets/giro_data/images/rmdash.py](datasets/giro_data/images/rmdash.py) and [datasets/filter.py](datasets/filter.py) respectively, but _before using them_ parse through the codeor even rewrite it. Also, you won't be able to get away with removing ground images without watching the videos! (Behold that they are 25fps, urls in [datasets/data_gen.py](datasets/data_gen.py).
+
 ### Training your model
 
 This whole procedure is performed by the [drone_demo/custom_train.py](drone_demo/custom_train.py). The main idea is to pass arguments in two ways:
@@ -98,7 +100,42 @@ This whole procedure is performed by the [drone_demo/custom_train.py](drone_demo
     
 __What you definitely will have to do:__ before every training, delete 'last_checkpoint' directory that is produced by the checkpointer. For some inexplainable reason, loading weights is in default setting done by the checkpointer and this is the way to circumvent the problems it causes. (For more details, refer to [drone_demo/custom_train.py](drone_demo/custom_train.py)) 
 
-This code will also do testing as default, using datasets specified in the config file
+This code will also do testing as default, using datasets specified in the config file.
+
+__Before starting training__: amend learning rate (in the config) and the above parameters if needed
+
+To see what type of output you shall see while training, refer to [drone_demo/log.txt](drone_demo/log.txt)
+
+
+### Evaluation (inference)
+
+The aim is to do inference on single images and then save the results as JPG (see report). 
+
+The script [drone_demo/draw_inference.py](drone_demo/draw_inference.py) is is ran as follows:
+    
+    python draw_inference.py --config-file d_e2e_faster_rcnn_X_101_32x8d_FPN_1x_visdrone.yaml --weights visdrone_model_0360000.pth --custom-dict draw_dict.txt --threshold 0.5
+    
++ _config_file_, _weights_: usual function
++ _threshold_: boxes of confidency above this will be drawn. The procedure uses helper functions defined in [drone_demo/single_img_inference.py](drone_demo/single_img_inference.py)
++ _custom_dict_: containing miscellaneous settings. Sample content:
+ 
+    reload : _best_acc_r5_v7.pth   
+    
+    out_path : ./pimg
+    
+    in_path : /zold137/datasets/giro_data/images/giro1/test
+    
+    annfile : /zold137/datasets/giro_data/annot/giro1.txt
+    
+    no_pred : 10
+    
+    + _reload_: what model to use to inference
+    + _out_path_: save outcome pics with boxes here (ground truth with red)
+    + _in_path_ : where to get images from
+    + _annfile_ : file with annotations of the above pictures
+    + _no_pred_: how many predictions to try to make (at most, maybe give error in there are not sufficiently enough. The exact way the pics are chosen from the in directory is specified in the code
+    
+This code basically draws ground-truth boxes and predictions above a given confidency threshold. I am not sure if loading by __cv2__ instead of the usual PIL does not cause some problems that I didn't have time to investigate.
     
 
 
