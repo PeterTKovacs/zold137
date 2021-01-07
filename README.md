@@ -2,6 +2,12 @@
 
 __Project of team 'zold137' in course BMWVITMAV45.__
 
+__Link of presentation video:__
+https://youtu.be/LWndT2G4eco
+
+slides: [drone_talk.pdf](drone_talk.pdf)
+
+
 __Team members__: (Soma Juhász, Ádám Zsolt Kővári), Péter Tamás Kovács
 
 __Note__: unfortunately, Soma and Ádám left the team before submission. They contributed equally in milestone 1. In milestone 2, their most important contribution was the script fetching images from Youtube. (That had to be seriously corrected in some sense much later by me - see summarizing report). After milestone 2, they abandoned me. 
